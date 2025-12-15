@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Template</title>
+    
+    <!-- React & ReactDOM (Development) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel Standalone (para compilar JSX en el navegador) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide React (CDN) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body { background-color: #f8fafc; margin: 0; }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- ICONOS ---
+        // Helper para convertir atributos kebab-case a camelCase para React
+        const toCamelCase = (str) => str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+
+        const IconWrapper = ({ name, className, size = 24, color = "currentColor", strokeWidth = 2, ...props }) => {
+            const iconData = lucide.icons[name];
+            
+            if (!iconData) {
+                console.warn(`Icon not found: ${name}`);
+                return null;
+            }
+
+            const convertAttrs = (attrs) => {
+                const reactAttrs = {};
+                for (const [key, value] of Object.entries(attrs)) {
+                    reactAttrs[toCamelCase(key)] = value;
+                }
+                return reactAttrs;
+            };
+
+            return (
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width={size} 
+                    height={size} 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke={color} 
+                    strokeWidth={strokeWidth} 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                    className={className}
+                    {...props}
+                >
+                    {iconData.map((child, index) => {
+                        const [tag, attrs] = child;
+                        return React.createElement(tag, { 
+                            ...convertAttrs(attrs), 
+                            key: index 
+                        });
+                    })}
+                </svg>
+            );
+        };
+
+        // Definir iconos aquí si es necesario, o usar IconWrapper directamente
+        // const User = (props) => <IconWrapper name="User" {...props} />;
+
+
+        // --- TU CÓDIGO REACT AQUÍ ---
+        
+        function App() {
+            const [count, setCount] = useState(0);
+
+            return (
+                <div className="min-h-screen flex items-center justify-center">
+                    <div className="bg-white p-8 rounded-xl shadow-lg text-center max-w-md w-full">
+                        <div className="mb-4 flex justify-center text-indigo-600">
+                             <IconWrapper name="Rocket" size={48} />
+                        </div>
+                        <h1 className="text-2xl font-bold text-slate-900 mb-2">Nuevo Prototipo</h1>
+                        <p className="text-slate-500 mb-6">
+                            Edita este archivo (<code>index.html</code>) y pega tu componente React aquí.
+                        </p>
+                        
+                        <button 
+                            onClick={() => setCount(c => c + 1)}
+                            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2 mx-auto w-full"
+                        >
+                            <IconWrapper name="MousePointerClick" size={18} />
+                            Clicks: {count}
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        // Renderizado
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+
+</body>
+</html>
